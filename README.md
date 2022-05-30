@@ -1,4 +1,5 @@
 # osm_building
+First, follow the steps in https://aws.amazon.com/blogs/big-data/querying-openstreetmap-with-amazon-athena/
 
 ## Get Building Polygons
 1_osm_building.txt: A sql script that queries OpenStreetMap using AWS Athena for building geometric information in a given bounding box.
