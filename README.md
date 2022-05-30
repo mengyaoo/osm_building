@@ -9,5 +9,7 @@ python 2_get_buildings.py
 ``` 
 
 ## Get Building Centroids
-osm_building_centroid.txt: A sql script that queries OpenStreetMap using AWS Athena for building centroids in a given bounding box.
+1_osm_building_polygon.txt
+
+2_get_building_centroid.txt: A sql script that generate building centroids from table created by query of 1_osm_building_polygon.
 
