@@ -1,3 +1,4 @@
+CREATE TABLE m_osm_buildings_v1 AS
 WITH nodes_in_bbox AS(
   SELECT id, lat, lon, type, tags FROM planet
   WHERE type='node'
