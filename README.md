@@ -3,7 +3,7 @@
 ## Get Building Polygons
 1_osm_building.txt: A sql script that queries OpenStreetMap using AWS Athena for building geometric information in a given bounding box.
 
-2_get_buildings.py: Get the polygons and save the result as GeoJSON file in outputs
+2_get_building_polygon.py: Get the polygons and save the result as GeoJSON file in outputs
 ```bash
 python 2_get_building_polygon.py 
 ``` 
