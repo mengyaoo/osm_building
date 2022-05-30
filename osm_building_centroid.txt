@@ -1,0 +1,71 @@
+CREATE TABLE IF NOT EXISTS m_uk_buildings
+AS(
+WITH nodes AS (
+  SELECT id, lat, lon, type, tags FROM planet
+  WHERE type='node'
+  AND lon BETWEEN -7.57216793459 AND 1.68153079591
+  AND lat BETWEEN 49.959999905 AND 58.6350001085
+),
+
+ways AS (
+  SELECT type, id, tags, nds FROM planet
+  WHERE type='way'
+)
+
+SELECT
+  ways.type,
+  ways.id,
+  AVG(nodes.lat) lat,
+  AVG(nodes.lon) lon,
+  ways.tags['name'] AS name,
+  ways.tags['amenity'] AS amenity,
+  ways.tags['shop'] as shop,
+  ways.tags['aeroway'] as aeroway,
+  ways.tags['building'] as building,
+  ways.tags['leisure'] as leisure,
+  ways.tags['office'] as office,
+  ways.tags['healthcare'] as healthcare,
+  ways.tags['craft'] as craft,
+  ways.tags['emergency'] as emergency,
+  ways.tags['historic'] as historic,
+  ways.tags['man_made'] as man_made,
+  ways.tags['military'] as military,
+  ways.tags['place'] as place,
+  ways.tags['power'] as power_,
+  ways.tags['public_transport'] as public_transport,
+  ways.tags['railway'] as railway,
+  ways.tags['sport'] as sport,
+  ways.tags['tourism'] as tourism,
+  ways.tags['landuse'] as landuse
+FROM ways
+CROSS JOIN UNNEST(nds) AS t (nd)
+JOIN nodes ON nodes.id = nd.ref
+GROUP BY (ways.type, ways.id, ways.tags)
+UNION ALL
+SELECT
+  type,
+  id,
+  lat,
+  lon,
+  tags['name'] AS name,
+  tags['amenity'] AS amenity,
+  tags['shop'] as shop,
+  tags['aeroway'] as aeroway,
+  tags['building'] as building,
+  tags['leisure'] as leisure,
+  tags['office'] as office,
+  tags['healthcare'] as healthcare,
+  tags['craft'] as craft,
+  tags['emergency'] as emergency,
+  tags['historic'] as historic,
+  tags['man_made'] as man_made,
+  tags['military'] as military,
+  tags['place'] as place,
+  tags['power'] as power_,
+  tags['public_transport'] as public_transport,
+  tags['railway'] as railway,
+  tags['sport'] as sport,
+  tags['tourism'] as tourism,
+  tags['landuse'] as landuse
+FROM nodes
+)
