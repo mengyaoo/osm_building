@@ -1,0 +1,60 @@
+WITH nodes_in_bbox AS(
+  SELECT id, lat, lon, type, tags FROM planet
+  WHERE type='node'
+  AND lon BETWEEN 114.0028131 AND 114.3228131
+  AND lat BETWEEN 22.1193278 AND 22.4393278
+),
+
+ways AS(
+  SELECT type, id, tags, nds FROM planet
+  WHERE type='way'
+),
+
+relation_ways AS(
+  SELECT r.id, r.tags, way.ref, way.role, way_position
+  FROM planet r
+  CROSS JOIN UNNEST(r.members)
+  WITH ORDINALITY AS m (way, way_position)
+  WHERE r.type='relation'
+  AND element_at(r.tags, 'type')='multipolygon'
+  AND way.role='outer' AND way.type='way'
+),
+
+
+full_data AS(
+SELECT w.id AS way_id,
+  n.id AS node_id,
+  r.id AS relation_id,
+  COALESCE(r.id, w.id) AS building_id,
+       n.lon, n.lat,
+	  node_position,
+	  COALESCE(r.tags['name'], w.tags['name']) AS name,
+      COALESCE(r.tags['amenity'], w.tags['amenity']) AS amenity,
+  COALESCE(r.tags['shop'], w.tags['shop']) AS shop,
+  COALESCE(r.tags['aeroway'], w.tags['aeroway']) AS aeroway,
+  COALESCE(r.tags['building'], w.tags['building']) AS building,
+  COALESCE(r.tags['leisure'], w.tags['leisure']) AS leisure,
+  COALESCE(r.tags['office'], w.tags['office']) AS office,
+  COALESCE(r.tags['healthcare'], w.tags['healthcare']) AS healthcare,
+  COALESCE(r.tags['craft'], w.tags['craft']) AS craft,
+  COALESCE(r.tags['emergency'], w.tags['emergency']) AS emergency,
+  COALESCE(r.tags['historic'], w.tags['historic']) AS historic,
+  COALESCE(r.tags['man_made'], w.tags['man_made']) AS man_made,
+  COALESCE(r.tags['military'], w.tags['military']) AS military,
+  COALESCE(r.tags['place'], w.tags['place']) AS place,
+  COALESCE(r.tags['power'], w.tags['power']) AS power,
+  COALESCE(r.tags['public_transport'], w.tags['public_transport']) AS public_transport,
+  COALESCE(r.tags['railway'], w.tags['railway']) AS railway,
+  COALESCE(r.tags['sport'], w.tags['sport']) AS sport,
+  COALESCE(r.tags['tourism'], w.tags['tourism']) AS tourism,
+  COALESCE(r.tags['landuse'], w.tags['landuse']) AS landuse
+  FROM ways w
+CROSS JOIN UNNEST(w.nds)
+WITH ORDINALITY AS t (nd, node_position)
+JOIN nodes_in_bbox n ON n.id = nd.ref
+LEFT OUTER JOIN relation_ways r ON w.id=r.ref
+WHERE element_at(COALESCE(r.tags, w.tags), 'building') IS NOT NULL
+ORDER BY relation_id, way_position, way_id, node_position
+)
+  
+select * from full_data;
