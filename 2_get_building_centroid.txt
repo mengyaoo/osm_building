@@ -1,4 +1,4 @@
 CREATE TABLE m_osm_buildings_v2 as (
-SELECT building_id, avg(lon) centroid_lon, avg(lat) centroid_lat, name, amenity, shop, aeroway, building, leisure, office, healthcare, craft, emergency, historic, man_made, military, place, power_, public_transport, railway, sport, tourism, landuse FROM "default"."m_osm_buildings_v1"
-group by building_id, name, amenity, shop, aeroway, building, leisure, office, healthcare, craft, emergency, historic, man_made, military, place, power_, public_transport, railway, sport, tourism, landuse 
+SELECT building_id, avg(lon) centroid_lon, avg(lat) centroid_lat, name, amenity, shop, aeroway, building, leisure, office, healthcare, craft, emergency, historic, man_made, military, place, power, public_transport, railway, sport, tourism, landuse FROM "default"."m_osm_buildings_v1"
+group by building_id, name, amenity, shop, aeroway, building, leisure, office, healthcare, craft, emergency, historic, man_made, military, place, power, public_transport, railway, sport, tourism, landuse 
 )
