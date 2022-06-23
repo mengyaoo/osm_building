@@ -2,3 +2,37 @@ CREATE TABLE m_osm_buildings_v2 as (
 SELECT building_id, avg(lon) centroid_lon, avg(lat) centroid_lat, name, amenity, shop, aeroway, building, leisure, office, healthcare, craft, emergency, historic, man_made, military, place, power, public_transport, railway, sport, tourism, landuse FROM "default"."m_osm_buildings_v1"
 group by building_id, name, amenity, shop, aeroway, building, leisure, office, healthcare, craft, emergency, historic, man_made, military, place, power, public_transport, railway, sport, tourism, landuse 
 )
+
+
+CREATE TABLE m_vietnam_buildings as(
+
+with df1 as (
+select building_id, centroid_lon, centroid_lat, name, 
+replace(amenity, 'yes', 'amenity') amenity,
+replace(shop, 'yes', 'shop') shop,
+replace(aeroway, 'yes', 'aeroway') aeroway,
+replace(leisure, 'yes', 'leisure') leisure,
+replace(office, 'yes', 'office') office,
+replace(healthcare, 'yes', 'healthcare') healthcare,
+replace(craft, 'yes', 'craft') craft,
+replace(emergency, 'yes', 'emergency') emergency,
+replace(historic, 'yes', 'historic') historic,
+replace(man_made, 'yes', 'man_made') man_made,
+replace(military, 'yes', 'military') military,
+replace(place, 'yes', 'place') place,
+replace(power, 'yes', 'power_') power,
+replace(public_transport, 'yes', 'public_transport') public_transport,
+replace(railway, 'yes', 'railway') railway,
+replace(sport, 'yes', 'sport') sport,
+replace(tourism, 'yes', 'tourism') tourism,
+replace(building, 'yes', 'building') building,
+replace(landuse, 'yes', 'landuse') landuse
+from m_osm_buildings_v2
+),
+
+df2 as (
+select building_id, centroid_lon, centroid_lat, name, COALESCE(amenity, shop, aeroway, building, leisure, office, healthcare, craft, emergency, historic, man_made, military, place, power, public_transport, railway, sport, tourism, landuse) as tag from df1
+)
+select * from df2
+
+)
